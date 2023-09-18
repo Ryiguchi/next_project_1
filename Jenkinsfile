@@ -10,7 +10,7 @@ pipeline {
 
     stage("Run Image") {
       steps{
-            sh "docker run -rm -d -p 3000:3000 --name next-app-dev next-app"
+            sh "docker run --rm -d -p 3000:3000 --name next-app-dev next-app"
       }
     }
 
