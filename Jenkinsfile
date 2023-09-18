@@ -1,10 +1,10 @@
 pipeline {
-  agent { dockerfile true }
+  agent any
   stages {
     
     stage("Check node version") {
       steps {
-        sh "node -v"
+        sh "docker ps"
       }
     }
     stage("Install") {
