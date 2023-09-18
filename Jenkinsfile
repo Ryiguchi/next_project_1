@@ -18,12 +18,13 @@ pipeline {
 
     stage("Run Image") {
       steps{
-            sh "docker run --rm -d -p 3000:3000 --name next-app-dev next-app"
+            sh "docker run --rm -d -p 4000:3000 --name next-app-dev next-app"
       }
     }
 
     stage("Health Check") {
       steps{
+        sh "ss -tuln"
         script {
           def response = sh (
                 script: """
