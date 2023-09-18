@@ -3,18 +3,26 @@ pipeline {
   stages {
     
     stage("Build image") {
-      // agent {
-      //   dockerfile true
-      // }
       steps {
-        sh "docker compose up"
+        sh "docker build -t next-app ."
       }
     }
-    stage("Install") {
+
+    stage("Run Image") {
       steps{
-          script {
-            sh "echo 'nothing special'"
-          }
+            sh "docker run -rm -d -p 3000:3000 --name next-app-dev next-app"
+      }
+    }
+
+    stage("Health Check") {
+      steps{
+          sh "docker exec -it next-app-dev ./scripts/health_check.sh"
+      }
+    }
+
+    stage("Remove Container") {
+      steps{
+          sh "docker stop next-app-dev"
       }
     }
     
