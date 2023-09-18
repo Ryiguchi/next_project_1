@@ -26,7 +26,7 @@ pipeline {
       steps{
         script {
             def listeningPorts = sh (
-                script: "ss -tuln | awk '{print \$4}' | cut -d':' -f2 | grep -E '^[0-9]+$'",
+                script: "ss -tuln | awk '{print \$4}' | cut -d':' -f2 | grep -E '^[0-9]+$'"
                 returnStdout: true
             ).trim()
             echo "Listening Ports: ${listeningPorts}"
