@@ -10,7 +10,7 @@ pipeline {
           customImage.inside {
               // You can run tests or other commands inside the Docker container here
               sh "node -v"
-              // Add additional test commands as needed
+            
           }
         }
       }
