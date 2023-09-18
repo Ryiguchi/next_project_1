@@ -9,7 +9,7 @@ pipeline {
     stage("Build and run docker image") {
       steps{
           script {
-            sh "sudo docker compose up"
+            sh "docker ps"
           }
       }
     }
