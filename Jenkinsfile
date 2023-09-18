@@ -8,9 +8,16 @@ pipeline {
       }
     }
 
+    stage("Remove image if present") {
+      steps{
+          catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+            sh "docker rm next-app-dev"
+          }
+      }
+    }
+
     stage("Run Image") {
       steps{
-            sh "docker rm next-app-dev"
             sh "docker run --rm -d --name next-app-dev next-app"
       }
     }
