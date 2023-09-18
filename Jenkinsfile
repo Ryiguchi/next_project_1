@@ -8,13 +8,13 @@ pipeline {
       }
     }
 
-    stage("Remove image if present") {
-      steps{
-          catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-            sh "docker rm next-app-dev"
-          }
-      }
-    }
+    // stage("Remove image if present") {
+    //   steps{
+    //       catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    //         sh "docker rm next-app-dev"
+    //       }
+    //   }
+    // }
 
     stage("Run Image") {
       steps{
@@ -24,8 +24,15 @@ pipeline {
 
     stage("Health Check") {
       steps{
-          sh "chmod +x scripts/health_check.sh"
-          sh "docker exec next-app-dev ./scripts/health_check.sh"
+          sh "response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000)
+
+          if [ "$response" = "200" ]; then
+              echo "Website is up and running."
+              exit 0  # Success
+          else
+              echo "Website is not responding as expected (HTTP $response)"
+              exit 1  # Failure
+          fi"
       }
     }
 
