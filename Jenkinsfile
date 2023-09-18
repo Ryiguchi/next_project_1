@@ -5,7 +5,7 @@ pipeline {
   stages {
     stage ("test") {
       steps {
-      sh "sudo ss -tunlp"
+      sh "ss -tunlp"
       }
     }
   }
