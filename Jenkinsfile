@@ -2,7 +2,13 @@ pipeline {
   agent {
     dockerfile true
   }
-  stages {}
+  stages {
+    stage("test") {
+      step {
+        sh "echo 'test'"
+      }
+    }
+  }
     
   //   stage("Build image") {
   //     steps {
