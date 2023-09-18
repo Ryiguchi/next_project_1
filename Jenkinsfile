@@ -7,7 +7,7 @@ pipeline {
       //   dockerfile true
       // }
       steps {
-        sh "docker ps"
+        sh "docker compose up"
       }
     }
     stage("Install") {
