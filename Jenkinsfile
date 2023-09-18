@@ -4,7 +4,9 @@ pipeline {
   }
   stages {
     stage("test") {
-      sh "echo 'test'"
+      steps {
+      sh "node -v"
+      }
     }
   }
     
