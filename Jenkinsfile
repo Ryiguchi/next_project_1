@@ -1,18 +1,10 @@
 pipeline {
-  agent any
+  agent { dockerfile true }
   stages {
     
     stage("Check node version") {
       steps {
-        script {
-          // Build the Docker image using your Dockerfile
-          def customImage = docker.build("next-project", "-f . .")
-          customImage.inside {
-              // You can run tests or other commands inside the Docker container here
-              sh "node -v"
-            
-          }
-        }
+        sh "node -v"
       }
     }
     stage("Install") {
