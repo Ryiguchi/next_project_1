@@ -30,7 +30,15 @@ pipeline {
 
     stage("Get logs") {
       steps {
-        sh "docker logs next-app-dev"
+        script {
+          def logs = sh(
+            script: "docker logs next-app-dev",
+            returnStdout: true
+          )
+          echo "Container Logs:"
+          echo logs  // Display logs in Jenkins console
+          // writeFile(file: "container-logs.txt", text: logs)  // Save logs to a file
+        }
       }
     }
 
