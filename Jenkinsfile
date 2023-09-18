@@ -18,7 +18,7 @@ pipeline {
 
     stage("Run Image") {
       steps{
-            sh "docker run --rm -d -p 4000:3000 --name next-app-dev next-app"
+            sh "docker run --rm -d -p 3000:3000 --name next-app-dev next-app"
       }
     }
 
@@ -27,7 +27,7 @@ pipeline {
         script {
           def response = sh (
                 script: """
-                    response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000)
+                    response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
 
                     if [ "\$response" = "200" ]; then
                         echo "Website is up and running."
