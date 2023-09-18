@@ -1,15 +1,19 @@
 pipeline {
-  agent any
+  agent {
+    dockerfile true
+  }
   stages {
-    stage("Show workspace") {
+    
+    stage("Check node version") {
+      
       steps {
-        sh "ls"
+        sh "node -version"
       }
     }
     stage("Install") {
       steps{
           script {
-            sh "docker ps"
+            sh "nothing"
           }
       }
     }
