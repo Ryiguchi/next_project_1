@@ -1,9 +1,16 @@
 pipeline {
   agent any
   stages {
-    stage("test") {
+    stage("Show workspace") {
       steps {
-        echo 'Changed Project'
+        sh "ls"
+      }
+    }
+    stage("Build and run docker image") {
+      steps{
+          script {
+            sh "docker compose up"
+          }
       }
     }
   
