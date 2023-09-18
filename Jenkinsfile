@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage("test") {
       steps {
-        echo 'it works!!!!!!!!'
+        echo 'Changed Project'
       }
     }
   
