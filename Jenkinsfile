@@ -6,7 +6,7 @@ pipeline {
         sh "ls"
       }
     }
-    stage("Build and run docker image") {
+    stage("Install") {
       steps{
           script {
             sh "docker ps"
