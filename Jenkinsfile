@@ -30,9 +30,9 @@ pipeline {
 
   post {
         failure {
-          // script {
-          //   sh "docker stop next-app-dev"
-          // }
+          script {
+            sh "docker stop next-app-dev"
+          }
           script {
             sh "docker rm next-app-dev"
             
