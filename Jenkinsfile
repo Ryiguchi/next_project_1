@@ -24,7 +24,7 @@ pipeline {
 
     stage("Health Check") {
       steps{
-          sh "chmod +x health_check.sh"
+          sh "chmod +x scripts/health_check.sh"
           sh "docker exec next-app-dev ./scripts/health_check.sh"
       }
     }
