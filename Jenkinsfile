@@ -22,12 +22,44 @@ pipeline {
       }
     }
 
+    stage("Wait for Server") {
+            steps {
+                script {
+                    def retries = 30  // Adjust the number of retries as needed
+                    def delaySeconds = 10  // Adjust the delay as needed
+
+                    echo "Waiting for server to start..."
+                    def serverReady = false
+
+                    for (int i = 0; i < retries; i++) {
+                        def response = sh (
+                            script: "curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4000",
+                            returnStatus: true
+                        )
+
+                        if (response == 0) {
+                            serverReady = true
+                            break
+                        }
+
+                        sleep(delaySeconds)
+                    }
+
+                    if (serverReady) {
+                        echo "Server is up and running."
+                    } else {
+                        error "Server did not start within the expected time."
+                    }
+                }
+            }
+        }
+
     stage("Health Check") {
       steps{
         script {
           def response = sh (
                 script: """
-                    response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+                    response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:4000)
 
                     if [ "\$response" = "200" ]; then
                         echo "Website is up and running."
