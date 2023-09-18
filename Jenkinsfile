@@ -3,11 +3,11 @@ pipeline {
   stages {
     
     stage("Build image") {
-      agent {
-        dockerfile true
-      }
+      // agent {
+      //   dockerfile true
+      // }
       steps {
-        sh "node -v"
+        sh "docker ps"
       }
     }
     stage("Install") {
