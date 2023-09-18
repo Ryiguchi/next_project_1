@@ -25,13 +25,6 @@ pipeline {
     stage("Health Check") {
       steps{
         script {
-            def listeningPorts = sh (
-                script: "ss -tuln | awk '{print \$4}' | cut -d':' -f2 | grep -E '^[0-9]+$'"
-                returnStdout: true
-            ).trim()
-            echo "Listening Ports: ${listeningPorts}"
-        }
-        script {
           def response = sh (
                 script: """
                     response=\$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
