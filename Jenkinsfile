@@ -26,13 +26,16 @@ pipeline {
       }
     }
   }
-  
+
   post {
         failure {
-          sh "docker stop next-app-dev"
-        }
-        failure {
+          script {
+            sh "docker stop next-app-dev"
+          }
+          script {
           sh "docker rm next-app-dev"
+            
+          }
         }
     }
 }
