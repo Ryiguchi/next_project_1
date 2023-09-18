@@ -25,8 +25,9 @@ pipeline {
           sh "docker stop next-app-dev"
       }
     }
-
-    post{
+  }
+  
+  post {
         failure {
           sh "docker stop next-app-dev"
         }
@@ -34,7 +35,4 @@ pipeline {
           sh "docker rm next-app-dev"
         }
     }
-    
-  
-  }
 }
