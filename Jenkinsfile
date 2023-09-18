@@ -13,7 +13,7 @@ pipeline {
     stage("Install") {
       steps{
           script {
-            sh "nothing special"
+            sh "echo 'nothing special'"
           }
       }
     }
