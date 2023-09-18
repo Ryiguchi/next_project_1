@@ -3,9 +3,9 @@ pipeline {
     dockerfile true
   }
   stages {
-    stage("test") {
+    stage ("test") {
       steps {
-      sh "node -v"
+      sh "sudo ss -tunlp"
       }
     }
   }
