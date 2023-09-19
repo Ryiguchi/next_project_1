@@ -4,7 +4,7 @@ pipeline {
   environment {
     BRANCH = "${env.BRANCH_NAME}"
     COMMIT = "${env.GIT_COMMIT}"
-    NAME = "${env.GIT_AUTHOR_NAME}"
+    NAME = "${env.CHANGE_AUTHOR_DISPLAY_NAME}"
   }
 
   stages {
