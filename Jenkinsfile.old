@@ -134,9 +134,6 @@ pipeline {
       script {
         slackSend(color: "#FF0000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
       }
-      when {
-        branch "dev"
-      }
       script {
         sh "docker stop next-app-dev"
       }
