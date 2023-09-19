@@ -124,6 +124,21 @@ pipeline {
       }
     }
 
+    // **MAIN ONLY** - Validate push to Docker Hub
+    stage('Validate push') {
+      when {
+        beforeInput true
+        branch "main"
+      }
+      input {
+        message "Push to Docker Hub?"
+        ok "Push!!"
+      }
+      steps{
+        echo 'Push Accepted'
+      }
+    }
+
     // **MAIN ONLY** - Pushes the production image to Docker hub  
     stage("Push to Docker Hub") {
       when {
