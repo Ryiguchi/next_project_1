@@ -40,9 +40,8 @@ pipeline {
           } catch (Exception e) {
               def errorMessage = "There were linting errors: ${e.getMessage()}"
               echo "${errorMessage}"
-              error(errorMessage)
               slackSend(
-                color: "#FF0000",
+                color: "danger",
                 message: "${errorMessage}",
               )
           }
