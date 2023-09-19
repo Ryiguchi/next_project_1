@@ -2,11 +2,6 @@ pipeline {
   agent any
 
   stages {
-    stage("Lint Code") {
-      steps {
-        sh "npm run lint"
-      }
-    }
 
     stage("Prune containers") {
       steps {
@@ -23,6 +18,12 @@ pipeline {
     stage("Run Image") {
       steps{
             sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app"
+      }
+    }
+
+    stage("Lint Code") {
+      steps {
+        sh "docker exec next-app-dev npm run lint"
       }
     }
 
