@@ -21,8 +21,8 @@ pipeline {
       steps {
         script {
 
-          if (${BRANCH} == 'main') {
-              DOCKERFILE = 'Dockerfile.main'
+          if (BRANCH == 'main') {
+              DOCKERFILE = "Dockerfile.main"
           } else {
               DOCKERFILE = "Dockerfile.dev"
           }
