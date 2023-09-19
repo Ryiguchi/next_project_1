@@ -43,13 +43,14 @@ pipeline {
 
   post {
     always {
-      catchError(stageResult: 'SUCCESS', buildResult: 'FAILURE')
+      catchError(stageResult: 'SUCCESS', buildResult: 'FAILURE') {
       script {
         sh "docker stop next-app-dev"
       }
       script {
         sh "docker rm next-app-dev"
         
+      }
       }
     }
   }
