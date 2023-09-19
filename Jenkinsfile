@@ -14,31 +14,15 @@ pipeline {
       }
     }
 
-    // stage("Remove image if present") {
-    //   steps{
-    //       catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    //         sh "docker rm next-app-dev"
-    //       }
-    //   }
-    // }
-
     stage("Run Image") {
       steps{
-            sh "docker run --rm  -p 4000:3000 --name next-app-dev next-app"
+            sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app"
       }
     }
 
-    stage("Get logs") {
+    stage("Testing") {
       steps {
-        script {
-          def logs = sh(
-            script: "docker logs next-app-dev",
-            returnStdout: true
-          )
-          echo "Container Logs:"
-          echo logs  // Display logs in Jenkins console
-          // writeFile(file: "container-logs.txt", text: logs)  // Save logs to a file
-        }
+        sh 'npm run test'
       }
     }
 
