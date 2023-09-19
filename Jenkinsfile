@@ -18,7 +18,7 @@ pipeline {
               def errorMessage = "Building the image failed: ${e.getMessage()}"
               error(errorMessage)
               slackSend(
-                color: "#FF0000"
+                color: "#FF0000",
                 message: errorMessage,
               )
           }
@@ -41,7 +41,7 @@ pipeline {
               def errorMessage = "There were linting errors: ${e.getMessage()}"
               error(errorMessage)
               slackSend(
-                color: "#FF0000"
+                color: "#FF0000",
                 message: errorMessage,
               )
           }
