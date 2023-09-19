@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage("Lint Code") {
       steps {
-        sh "eslint ./pages"
+        sh "npm run lint"
       }
     }
 
