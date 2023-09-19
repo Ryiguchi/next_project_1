@@ -20,8 +20,9 @@ pipeline {
           try {
             sh "docker build --no-cache -t next-app -f ./Dockerfile.dev ."
           } catch (Exception e) {
+              ERROR_MESSAGE = "There was a build error: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
-              error("There was a linting error: ${e.getMessage()}")
+              error("${ERROR_MESSAGE}")
           }
         }
       }
@@ -29,7 +30,15 @@ pipeline {
 
     stage("Run Image") {
       steps{
+        script {
+          try {
             sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app"
+          } catch (Exception e) {
+              ERROR_MESSAGE = "There was an error running the container: ${e.getMessage()}"
+              currentBuild.result = 'FAILURE'
+              error("${ERROR_MESSAGE}")
+          }
+        }
       }
     }
 
@@ -39,7 +48,7 @@ pipeline {
           try {
             sh "docker exec next-app-dev npm run lint"
           } catch (Exception e) {
-            ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
+              ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
               error("${ERROR_MESSAGE}")
           }
@@ -50,7 +59,16 @@ pipeline {
 
     stage("Testing") {
       steps {
-        sh 'docker exec next-app-dev npm run test '
+        script {
+          try {
+            sh 'docker exec next-app-dev npm run test '
+          } catch (Exception e) {
+              ERROR_MESSAGE = "Testing failed: ${e.getMessage()}"
+              currentBuild.result = 'FAILURE'
+              error("${ERROR_MESSAGE}")
+          }
+        }
+        
       }
     }
 
@@ -66,12 +84,12 @@ pipeline {
     }
     failure {
       script {
-        slackSend(color: "#008000", message: "Pipeline failed: ${ERROR_MESSAGE}")
+        slackSend(color: "#FF0000", message: "Branch: ${BRANCH} Commit#: ${COMMIT} -- Pipeline failed: ${ERROR_MESSAGE}")
       }
     }
     success {
       script {
-        slackSend(color: "#008000", message: "Pipeline failed: ${currentBuild.currentResult.toString()}")
+        slackSend(color: "#008000", message: "Branch: ${BRANCH} Commit#: ${COMMIT} -- Pipeline succeeded!  Good job!}")
       }
     }
   }
