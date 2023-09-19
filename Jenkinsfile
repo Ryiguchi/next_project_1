@@ -4,12 +4,15 @@ pipeline {
   environment {
     BRANCH = "${env.BRANCH_NAME}"
     COMMIT = "${env.GIT_COMMIT}"
-    NAME = "${env.CHANGE_AUTHOR_DISPLAY_NAME}"
+    DOCKERFILE = "Dockerfile.${BRANCH}"
   }
 
   stages {
 
     stage("Prune containers") {
+      when {
+        branch "dev"
+      }
       steps {
         sh "docker container prune -f"
       }
@@ -19,7 +22,8 @@ pipeline {
       steps {
         script {
           try {
-            sh "docker build --no-cache -t next-app -f ./Dockerfile.dev ."
+            echo "${DOCKERFILE}"
+            sh "docker build --no-cache -t next-app -f ./${DOCKERFILE} ."
           } catch (Exception e) {
               ERROR_MESSAGE = "There was a build error: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
@@ -30,6 +34,9 @@ pipeline {
     }
 
     stage("Run Image") {
+      when {
+        branch "dev"
+      }
       steps{
         script {
           try {
@@ -44,6 +51,9 @@ pipeline {
     }
 
     stage("Lint Code") {
+      when {
+        branch "dev"
+      }
       steps {
         script {
           try {
@@ -59,6 +69,9 @@ pipeline {
     }
 
     stage("Testing") {
+      when {
+        branch "dev"
+      }
       steps {
         script {
           try {
@@ -85,12 +98,12 @@ pipeline {
     }
     failure {
       script {
-        slackSend(color: "#FF0000", message: "NAME: ${NAME} \nBRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
+        slackSend(color: "#FF0000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
       }
     }
     success {
       script {
-        slackSend(color: "#008000", message: "NAME: ${NAME} \nBRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \nMESSAGE: Pipeline succeeded!  \nGood job!!!")
+        slackSend(color: "#008000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline succeeded!  \nGood job!!!")
       }
     }
   }
