@@ -94,6 +94,7 @@ pipeline {
       }
     }
 
+    // **DEV ONLY** - Builds code
     stage("Building") {
       when{
           branch "dev"
@@ -111,6 +112,7 @@ pipeline {
       }
     }
 
+    // **DEV ONLY** - Removes container
     stage("Remove container") {
       when {
           branch "dev"
@@ -119,6 +121,31 @@ pipeline {
         script {
           sh "docker stop next-app-dev"
       }
+      }
+    }
+
+    // **MAIN ONLY** - Pushes the production image to Docker hub  
+    stage("Push to Docker Hub") {
+      when {
+        branch "main"
+      }
+      steps {
+        script {
+          sh "docker -tag next-app-main rymela/next-project"
+          sh "docker push rymela/next-project"
+        }
+      }
+    }
+
+    // **MAIN ONLY** - Removes image
+    stage("Remove repo image") {
+      when {
+        branch "main"
+      }
+      steps {
+        script {
+          sh "docker rmi rymela/next-project"
+        }
       }
     }
 
