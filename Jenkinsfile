@@ -21,8 +21,9 @@ pipeline {
     // Builds Docker image 
     stage("Building image") {
       steps {
+        sh 'pwd'
         script {
-
+          
           if (BRANCH == 'main') {
               DOCKERFILE = "Dockerfile.main"
           } else {
