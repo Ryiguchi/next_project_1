@@ -139,7 +139,7 @@ pipeline {
       }
     }
 
-    // **MAIN ONLY** - Pushes the production image to Docker hub  
+    // **MAIN ONLY** - Pushes the production image to Docker hub 
     stage("Push to Docker Hub") {
       when {
         branch "main"
