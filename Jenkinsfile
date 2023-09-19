@@ -1,10 +1,10 @@
 pipeline {
   agent any
 
-  // environment {
-  //   BRANCH = env.BRANCH_NAME
-  //   COMMIT = env.GIT_COMMIT
-  // }
+  environment {
+    BRANCH = ${env.BRANCH_NAME}
+    COMMIT = ${env.GIT_COMMIT}
+  }
 
   stages {
 
@@ -39,8 +39,9 @@ pipeline {
           try {
             sh "docker exec next-app-dev npm run lint"
           } catch (Exception e) {
+            ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
-              error("There was a linting error: ${e.getMessage()}")
+              error("${ERROR_MESSAGE}")
           }
         }
         
@@ -65,7 +66,7 @@ pipeline {
     }
     failure {
       script {
-        slackSend(color: "#008000", message: "Pipeline failed: ${currentBuild.currentResult.toString()}")
+        slackSend(color: "#008000", message: "Pipeline failed: ${ERROR_MESSAGE}")
       }
     }
     success {
