@@ -1,6 +1,11 @@
 pipeline {
   agent any
 
+  environment {
+    BRANCH = env.BRANCH_NAME
+    COMMIT = env.GIT_COMMIT
+  }
+
   stages {
 
     stage("Prune containers") {
@@ -15,12 +20,8 @@ pipeline {
           try {
             sh "docker build --no-cache -t next-app -f ./Dockerfile.dev ."
           } catch (Exception e) {
-              def errorMessage = "Building the image failed: ${e.getMessage()}"
-              error(errorMessage)
-              slackSend(
-                color: "#FF0000",
-                message: errorMessage,
-              )
+              currentBuild.result = 'FAILURE'
+              error("There was a linting error: ${e.getMessage()}")
           }
         }
       }
@@ -38,12 +39,8 @@ pipeline {
           try {
             sh "docker exec next-app-dev npm run lint"
           } catch (Exception e) {
-              def errorMessage = "There were linting errors: ${e.getMessage()}"
-              echo "${errorMessage}"
-              slackSend(
-                color: "danger",
-                message: "${errorMessage}",
-              )
+              currentBuild.result = 'FAILURE'
+              error("There was a linting error: ${e.getMessage()}")
           }
         }
         
@@ -73,7 +70,7 @@ pipeline {
     }
     success {
       script {
-        slackSend(color: "#008000", message: "Push was successful!  Good Job!")
+        slackSend(color: "#008000", message: "Pipeline failed: ${currentBuild.currentResult.toString()}")
       }
     }
   }
