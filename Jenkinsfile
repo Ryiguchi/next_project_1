@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   environment {
+    DOCKERHUB_CREDENTIALS = credentials('docker_hub')
     BRANCH = "${env.BRANCH_NAME}"
     COMMIT = "${env.GIT_COMMIT}"
   }
@@ -136,6 +137,13 @@ pipeline {
       }
       steps{
         echo 'Push Accepted'
+      }
+    }
+
+    // **MAIN ONLY** - Sign in to Docker Hub
+    stage('Login to Docker Hub') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
 
