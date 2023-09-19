@@ -4,7 +4,6 @@ pipeline {
   environment {
     BRANCH = "${env.BRANCH_NAME}"
     COMMIT = "${env.GIT_COMMIT}"
-    DOCKERFILE = "Dockerfile.${BRANCH}"
   }
 
   stages {
@@ -21,6 +20,13 @@ pipeline {
     stage("Build image") {
       steps {
         script {
+
+          if (${BRANCH} == 'main') {
+              DOCKERFILE = 'Dockerfile.main'
+          } else {
+              DOCKERFILE = "Dockerfile.dev"
+          }
+
           try {
             echo "${DOCKERFILE}"
             sh "docker build --no-cache -t next-app -f ./${DOCKERFILE} ."
