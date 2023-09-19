@@ -28,7 +28,6 @@ pipeline {
           }
 
           try {
-            echo "${DOCKERFILE}"
             sh "docker build --no-cache -t next-app -f ./${DOCKERFILE} ."
           } catch (Exception e) {
               ERROR_MESSAGE = "There was a build error: ${e.getMessage()}"
@@ -96,6 +95,9 @@ pipeline {
 
   post {
     always {
+      when {
+        branch "dev"
+      }
       catchError(stageResult: 'SUCCESS', buildResult: 'FAILURE') {
       script {
         sh "docker stop next-app-dev"
@@ -107,7 +109,7 @@ pipeline {
         slackSend(color: "#FF0000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
       }
     }
-    
+
     success {
       script {
         slackSend(color: "#008000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline succeeded!  \nGood job!!!")
