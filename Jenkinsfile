@@ -8,7 +8,8 @@ pipeline {
 
   stages {
 
-    stage("Prune containers") {
+    // **DEV ONLY** - Removes the old container if it exists due to previous error
+    stage("Pruning old containers") {
       when {
         branch "dev"
       }
@@ -17,7 +18,8 @@ pipeline {
       }
     }
 
-    stage("Build image") {
+    // Builds Docker image 
+    stage("Building image") {
       steps {
         script {
 
@@ -29,7 +31,7 @@ pipeline {
 
           try {
             echo "${DOCKERFILE}"
-            sh "docker build --no-cache -t next-app -f ./${DOCKERFILE} ."
+            sh "docker build --no-cache -t next-app-${BRANCH} -f ./${DOCKERFILE} ."
           } catch (Exception e) {
               ERROR_MESSAGE = "There was a build error: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
@@ -39,14 +41,15 @@ pipeline {
       }
     }
 
-    stage("Run Image") {
+    // **DEV ONLY** - Starts Docker container
+    stage("Startings container") {
       when {
         branch "dev"
       }
       steps{
         script {
           try {
-            sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app"
+            sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app-dev"
           } catch (Exception e) {
               ERROR_MESSAGE = "There was an error running the container: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
@@ -56,7 +59,8 @@ pipeline {
       }
     }
 
-    stage("Lint Code") {
+    // **DEV ONLY** - Uses ESLint to check for errors
+    stage("Linting") {
       when {
         branch "dev"
       }
@@ -74,6 +78,7 @@ pipeline {
       }
     }
 
+    // **DEV ONLY** - Runs unit tests with Jest
     stage("Testing") {
       when {
         branch "dev"
@@ -89,6 +94,23 @@ pipeline {
           }
         }
         
+      }
+    }
+
+    stage("Building") {
+      when{
+          branch "dev"
+      }
+      steps {
+        script {
+          try {
+            sh 'npm run test'
+          } catch (Exception e) {
+              ERROR_MESSAGE = "Building failed: ${e.getMessage()}"
+              currentBuild.result = 'FAILURE'
+              error("${ERROR_MESSAGE}")
+          }
+        }
       }
     }
 
