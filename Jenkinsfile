@@ -65,7 +65,7 @@ pipeline {
     }
     failure {
       script {
-        slackSend(color: "danger", message: "Please fix the errors!")
+        slackSend(color: "#008000", message: "Pipeline failed: ${currentBuild.currentResult.toString()}")
       }
     }
     success {
