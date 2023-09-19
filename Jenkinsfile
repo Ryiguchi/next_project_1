@@ -14,7 +14,7 @@ pipeline {
         sh "docker container prune -f"
       }
     }
-    
+
     stage("Build image") {
       steps {
         sh "docker build --no-cache -t next-app ."
@@ -48,10 +48,6 @@ pipeline {
       catchError(stageResult: 'SUCCESS', buildResult: 'FAILURE') {
       script {
         sh "docker stop next-app-dev"
-      }
-      script {
-        sh "docker rm next-app-dev"
-        
       }
       }
     }
