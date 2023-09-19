@@ -71,5 +71,10 @@ pipeline {
         slackSend(color: "danger", message: "Please fix the errors!")
       }
     }
+    success {
+      script {
+        slackSend(color: "#008000", message: "Push was successful!  Good Job!")
+      }
+    }
   }
 }
