@@ -114,19 +114,21 @@ pipeline {
       }
     }
 
-  }
-
-  post {
-    always {
+    stage("Remove container") {
       when {
-        branch "dev"
+          branch "dev"
       }
-      catchError(stageResult: 'SUCCESS', buildResult: 'FAILURE') {
-      script {
-        sh "docker stop next-app-dev"
+      steps {
+        script {
+          sh "docker stop next-app-dev"
       }
       }
     }
+
+  }
+
+  post {
+
     failure {
       script {
         slackSend(color: "#FF0000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
