@@ -7,7 +7,14 @@ pipeline {
   //     }
   //   }
   // }
+
   stages {
+    stage("Prune containers") {
+      steps {
+        sh "docker container prune -f"
+      }
+    }
+    
     stage("Build image") {
       steps {
         sh "docker build --no-cache -t next-app ."
@@ -34,11 +41,6 @@ pipeline {
       }
     }
 
-    // stage("Remove Container") {
-    //   steps{
-    //       sh "docker stop next-app-dev"
-    //   }
-    // }
   }
 
   post {
