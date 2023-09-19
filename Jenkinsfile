@@ -11,7 +11,18 @@ pipeline {
 
     stage("Build image") {
       steps {
-        sh "docker build --no-cache -t next-app -f ./Dockerfile.dev ."
+        script {
+          try {
+            sh "docker build --no-cache -t next-app -f ./Dockerfile.dev ."
+          } catch (Exception e) {
+              def errorMessage = "Building the image failed: ${e.getMessage()}"
+              error(errorMessage)
+              slackSend(
+                color: "#FF0000"
+                message: errorMessage,
+              )
+          }
+        }
       }
     }
 
@@ -23,7 +34,19 @@ pipeline {
 
     stage("Lint Code") {
       steps {
-        sh "docker exec next-app-dev npm run lint"
+        script {
+          try {
+            sh "docker exec next-app-dev npm run lint"
+          } catch (Exception e) {
+              def errorMessage = "There were linting errors: ${e.getMessage()}"
+              error(errorMessage)
+              slackSend(
+                color: "#FF0000"
+                message: errorMessage,
+              )
+          }
+        }
+        
       }
     }
 
@@ -41,6 +64,11 @@ pipeline {
       script {
         sh "docker stop next-app-dev"
       }
+      }
+    }
+    failure {
+      script {
+        slackSend(color: "danger", message: "Please fix the errors!")
       }
     }
   }
