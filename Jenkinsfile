@@ -1,10 +1,10 @@
 pipeline {
   agent any
 
-  environment {
-    BRANCH = env.BRANCH_NAME
-    COMMIT = env.GIT_COMMIT
-  }
+  // environment {
+  //   BRANCH = env.BRANCH_NAME
+  //   COMMIT = env.GIT_COMMIT
+  // }
 
   stages {
 
