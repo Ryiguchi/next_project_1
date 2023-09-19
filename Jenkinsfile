@@ -1,12 +1,5 @@
 pipeline {
   agent any
-  // stages {
-  //   stage ("test") {
-  //     steps {
-  //     sh "ss -tunlp"
-  //     }
-  //   }
-  // }
 
   stages {
     stage("Prune containers") {
