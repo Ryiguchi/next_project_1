@@ -35,10 +35,6 @@ pipeline {
       }
     }
 
-    stage("Print Logs") {
-      
-    }
-
     stage("Testing") {
       steps {
         sh 'docker exec next-app-dev npm run test '
