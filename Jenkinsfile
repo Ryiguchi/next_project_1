@@ -4,6 +4,7 @@ pipeline {
   environment {
     BRANCH = "${env.BRANCH_NAME}"
     COMMIT = "${env.GIT_COMMIT}"
+    NAME = "${GIT_COMMITTER_NAME}"
   }
 
   stages {
@@ -84,12 +85,12 @@ pipeline {
     }
     failure {
       script {
-        slackSend(color: "#FF0000", message: "Branch: ${BRANCH} Commit#: ${COMMIT} -- Pipeline failed: ${ERROR_MESSAGE}")
+        slackSend(color: "#FF0000", message: "Name: ${NAME} \nBranch: ${BRANCH} \nCommit#: ${COMMIT} \nMESSAGE: Pipeline failed: ${ERROR_MESSAGE}")
       }
     }
     success {
       script {
-        slackSend(color: "#008000", message: "Branch: ${BRANCH} Commit#: ${COMMIT} -- Pipeline succeeded!  Good job!}")
+        slackSend(color: "#008000", message: "Name: ${NAME} \nBranch: ${BRANCH} \nCommit#: ${COMMIT} \nMESSAGE: Pipeline succeeded!  \nGood job!!!}")
       }
     }
   }
