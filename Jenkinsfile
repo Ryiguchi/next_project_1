@@ -2,6 +2,12 @@ pipeline {
   agent any
 
   stages {
+    stage("Lint Code") {
+      steps {
+        sh "eslint --version"
+      }
+    }
+
     stage("Prune containers") {
       steps {
         sh "docker container prune -f"
@@ -10,7 +16,7 @@ pipeline {
 
     stage("Build image") {
       steps {
-        sh "docker build --no-cache -t next-app ."
+        sh "docker build --no-cache -t next-app -f ./Dockerfile.dev ."
       }
     }
 
