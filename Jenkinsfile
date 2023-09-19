@@ -9,36 +9,42 @@ pipeline {
   // }
   stages {
     stage("Build image") {
+      agent {
+        dockerfile true
+      }
       steps {
-        sh "docker build -t next-app ."
+        sh "npm run test"
       }
+      // steps {
+      //   sh "docker build -t next-app ."
+      // }
     }
 
-    stage("Remove image if it exists") {
-      steps {
-        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-          sh "docker rm next-app-dev"
-        }
-      }
-    }
+  //   stage("Remove image if it exists") {
+  //     steps {
+  //       catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+  //         sh "docker rm next-app-dev"
+  //       }
+  //     }
+  //   }
 
-    stage("Run Image") {
-      steps{
-            sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app"
-      }
-    }
+  //   stage("Run Image") {
+  //     steps{
+  //           sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app"
+  //     }
+  //   }
 
-    stage("Testing") {
-      steps {
-        sh 'npm run test'
-      }
-    }
+  //   stage("Testing") {
+  //     steps {
+  //       sh 'docker exec npm run test'
+  //     }
+  //   }
 
-    stage("Remove Container") {
-      steps{
-          sh "docker stop next-app-dev"
-      }
-    }
+  //   stage("Remove Container") {
+  //     steps{
+  //         sh "docker stop next-app-dev"
+  //     }
+  //   }
   }
 
   post {
