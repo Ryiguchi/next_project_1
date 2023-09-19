@@ -38,7 +38,9 @@ pipeline {
           try {
             sh "docker exec next-app-dev npm run lint"
           } catch (Exception e) {
+              echo "Linting errors detected"
               def errorMessage = "There were linting errors: ${e.getMessage()}"
+              echo "${e.getMessage}"
               error(errorMessage)
               slackSend(
                 color: "#FF0000",
