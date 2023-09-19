@@ -85,12 +85,12 @@ pipeline {
     }
     failure {
       script {
-        slackSend(color: "#FF0000", message: "Name: ${NAME} \nBranch: ${BRANCH} \nCommit#: ${COMMIT} \nMESSAGE: Pipeline failed: ${ERROR_MESSAGE}")
+        slackSend(color: "#FF0000", message: "NAME: ${NAME} \nBRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
       }
     }
     success {
       script {
-        slackSend(color: "#008000", message: "Name: ${NAME} \nBranch: ${BRANCH} \nCommit#: ${COMMIT} \nMESSAGE: Pipeline succeeded!  \nGood job!!!}")
+        slackSend(color: "#008000", message: "NAME: ${NAME} \nBRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \nMESSAGE: Pipeline succeeded!  \nGood job!!!")
       }
     }
   }
