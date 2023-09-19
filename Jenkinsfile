@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    BRANCH = ${env.BRANCH_NAME}
-    COMMIT = ${env.GIT_COMMIT}
+    BRANCH = "${env.BRANCH_NAME}"
+    COMMIT = "${env.GIT_COMMIT}"
   }
 
   stages {
