@@ -146,7 +146,7 @@ pipeline {
       }
       steps {
         script {
-          sh "docker -tag next-app-main rymela/next-project"
+          sh "docker tag next-app-main rymela/next-project"
           sh "docker push rymela/next-project"
         }
       }
