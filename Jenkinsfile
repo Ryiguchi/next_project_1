@@ -104,7 +104,7 @@ pipeline {
       steps {
         script {
           try {
-            sh 'npm run test'
+            sh 'npm run build'
           } catch (Exception e) {
               ERROR_MESSAGE = "Building failed: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
