@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage("Lint Code") {
       steps {
-        sh "eslint --version"
+        sh "eslint ./pages"
       }
     }
 
