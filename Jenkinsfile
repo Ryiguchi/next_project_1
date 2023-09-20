@@ -9,7 +9,7 @@ pipeline {
 
   stages {
 
-    // Removes the old container if it exists due to previous error
+    // 
     stage("Build Agent") {
       when {
         branch "dev"
