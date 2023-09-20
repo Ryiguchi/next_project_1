@@ -160,15 +160,15 @@ pipeline {
       }
     }
 
-    // **MAIN ONLY** - Update ECS Service
-    stage("Depoly") {
-      when {
-        branch "main"
-      }
-      steps {
-        withCredentials()
-      }
-    }
+    // // **MAIN ONLY** - Update ECS Service
+    // stage("Depoly") {
+    //   when {
+    //     branch "main"
+    //   }
+    //   steps {
+    //     withCredentials()
+    //   }
+    // }
 
     // **MAIN ONLY** - Removes image
     stage("Remove repo image") {
