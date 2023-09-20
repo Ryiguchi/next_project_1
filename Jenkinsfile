@@ -160,13 +160,33 @@ pipeline {
       }
     }
 
+    // **MAIN ONLY** - Validate push to Deploy
+    stage('Validate deploy') {
+      when {
+        beforeInput true
+        branch "main"
+      }
+      input {
+        message "Deploy to ECS?"
+        ok "Deploy!!"
+      }
+      steps{
+        echo 'Deployed'
+      }
+    }
+
     // **MAIN ONLY** - Update ECS Service
     stage("Depoly") {
       when {
         branch "main"
       }
       steps {
-        withCredentials([<object of type com.cloudbees.jenkins.plugins.awscredentials.AmazonWebServicesCredentialsBinding>]) {
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'aws-access-next', // Replace with your actual credentials ID
+            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+        ]]) {
           sh 'aws ecs update-service --cluster next-project-cluster --service next-project --force-new-deployment'
         }
       }
