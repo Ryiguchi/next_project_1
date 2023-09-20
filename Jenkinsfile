@@ -30,6 +30,7 @@ pipeline {
       steps {
         script {
           try {
+            sh "node -v"
             sh "npm run lint"
           } catch (Exception e) {
               ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
@@ -113,15 +114,15 @@ pipeline {
       }
     }
 
-    // **MAIN ONLY** - Update ECS Service
-    stage("Depoly") {
-      when {
-        branch "main"
-      }
-      steps {
-        withCredentials()
-      }
-    }
+    // // **MAIN ONLY** - Update ECS Service
+    // stage("Depoly") {
+    //   when {
+    //     branch "main"
+    //   }
+    //   steps {
+    //     withCredentials()
+    //   }
+    // }
 
     // **MAIN ONLY** - Removes image
     stage("Remove repo image") {
