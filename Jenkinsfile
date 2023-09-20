@@ -9,16 +9,51 @@ pipeline {
 
   stages {
 
-    // 
-    stage("Build Agent") {
-      agent {
-        dockerfile true
+    // Removes the old container if it exists due to previous error
+    stage("Pruning old containers") {
+      steps {
+        sh "docker container prune -f"
       }
+    }
+
+    // Builds Docker image 
+    stage("Building image") {
+      steps {
+        sh 'pwd'
+        script {
+          
+          if (BRANCH == 'main') {
+              DOCKERFILE = "Dockerfile.main"
+          } else {
+              DOCKERFILE = "Dockerfile.dev"
+          }
+
+          try {
+            sh "docker build --no-cache -t next-app-${BRANCH} -f ./${DOCKERFILE} ."
+          } catch (Exception e) {
+              ERROR_MESSAGE = "There was a build error: ${e.getMessage()}"
+              currentBuild.result = 'FAILURE'
+              error("${ERROR_MESSAGE}")
+          }
+        }
+      }
+    }
+
+    // **DEV ONLY** - Starts Docker container
+    stage("Startings container") {
       when {
         branch "dev"
       }
-      steps {
-        echo "Agent built successfully!"
+      steps{
+        script {
+          try {
+            sh "docker run -d --rm  -p 4000:3000 --name next-app-dev next-app-dev"
+          } catch (Exception e) {
+              ERROR_MESSAGE = "There was an error running the container: ${e.getMessage()}"
+              currentBuild.result = 'FAILURE'
+              error("${ERROR_MESSAGE}")
+          }
+        }
       }
     }
 
@@ -30,8 +65,7 @@ pipeline {
       steps {
         script {
           try {
-            sh "node -v"
-            sh "npm run lint"
+            sh "docker exec next-app-dev npm run lint"
           } catch (Exception e) {
               ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
@@ -50,7 +84,7 @@ pipeline {
       steps {
         script {
           try {
-            sh 'npm run test '
+            sh 'docker exec next-app-dev npm run test '
           } catch (Exception e) {
               ERROR_MESSAGE = "Testing failed: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
@@ -69,13 +103,25 @@ pipeline {
       steps {
         script {
           try {
-            sh 'npm run build'
+            sh 'docker exec next-app-dev npm run build'
           } catch (Exception e) {
               ERROR_MESSAGE = "Building failed: ${e.getMessage()}"
               currentBuild.result = 'FAILURE'
               error("${ERROR_MESSAGE}")
           }
         }
+      }
+    }
+
+    // **DEV ONLY** - Removes container
+    stage("Remove container") {
+      when {
+          branch "dev"
+      }
+      steps {
+        script {
+          sh "docker stop next-app-dev"
+      }
       }
     }
 
@@ -114,15 +160,17 @@ pipeline {
       }
     }
 
-    // // **MAIN ONLY** - Update ECS Service
-    // stage("Depoly") {
-    //   when {
-    //     branch "main"
-    //   }
-    //   steps {
-    //     withCredentials()
-    //   }
-    // }
+    // **MAIN ONLY** - Update ECS Service
+    stage("Depoly") {
+      when {
+        branch "main"
+      }
+      steps {
+        withCredentials([<object of type com.cloudbees.jenkins.plugins.awscredentials.AmazonWebServicesCredentialsBinding>]) {
+          sh 'aws ecs update-service --cluster next-project-cluster --service next-project --force-new-deployment'
+        }
+      }
+    }
 
     // **MAIN ONLY** - Removes image
     stage("Remove repo image") {
