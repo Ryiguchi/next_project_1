@@ -98,7 +98,7 @@ pipeline {
     // **DEV ONLY** - Builds code
     stage("Building") {
       when{
-          branch "dev"
+        branch "dev"
       }
       steps {
         script {
@@ -116,12 +116,10 @@ pipeline {
     // **DEV ONLY** - Removes container
     stage("Remove container") {
       when {
-          branch "dev"
+        branch "dev"
       }
       steps {
-        script {
-          sh "docker stop next-app-dev"
-      }
+        sh "docker stop next-app-dev"
       }
     }
 
@@ -153,10 +151,8 @@ pipeline {
         branch "main"
       }
       steps {
-        script {
-          sh "docker tag next-app-main rymela/next-project"
-          sh "docker push rymela/next-project"
-        }
+        sh "docker tag next-app-main rymela/next-project"
+        sh "docker push rymela/next-project"
       }
     }
 
@@ -198,9 +194,7 @@ pipeline {
         branch "main"
       }
       steps {
-        script {
-          sh "docker rmi rymela/next-project"
-        }
+        sh "docker rmi rymela/next-project"
       }
     }
 
@@ -210,22 +204,16 @@ pipeline {
 
     failure {
       steps {
-      script {
         slackSend(color: "#FF0000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline failed: ${ERROR_MESSAGE} \nPlease fix!!") 
-      }
       when {
         branch "dev"
       }
-      script {
         sh "docker stop next-app-dev"
-      }
       }
     }
 
     success {
-      script {
-        slackSend(color: "#008000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline succeeded!  \nGood job!!!")
-      }
+      slackSend(color: "#008000", message: "BRANCH: ${BRANCH} \nCOMMIT#: ${COMMIT} \n\nMESSAGE: Pipeline succeeded!  \nGood job!!!")
     }
   }
 }
