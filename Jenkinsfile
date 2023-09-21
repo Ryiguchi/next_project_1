@@ -127,21 +127,6 @@ pipeline {
           }
         }
 
-<<<<<<< HEAD
-    // **MAIN ONLY** - Update ECS Service
-    stage("Deploy") {
-      when {
-        branch "main"
-      }
-      steps {
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'aws-access-next', // Replace with your actual credentials ID
-            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-        ]]) {
-          sh 'aws ecs update-service --cluster next-project-cluster --service next-project --force-new-deployment'
-=======
         //  Update ECS Service
         stage("Depoly") {
           steps {
@@ -161,7 +146,6 @@ pipeline {
           steps {
             sh "docker rmi rymela/next-project"
           }
->>>>>>> main
         }
       }
     }
