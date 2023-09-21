@@ -9,7 +9,9 @@ function HomePage(props) {
     <ul>
       {products.map(product => (
         <li key={product.id}>
-          <Link href={`/products/${product.id}`}>{product.title}!!!!!</Link>
+          <Link href={`/products/${product.id}`}>
+            {product.title} PRODUCTION
+          </Link>
         </li>
       ))}
     </ul>
