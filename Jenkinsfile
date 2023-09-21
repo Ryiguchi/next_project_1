@@ -147,7 +147,7 @@ pipeline {
                 accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
               ]]) {
-                sh 'aws ecs update-service --cluster next-project-cluster --service next-project --force-new-deployment'
+                sh 'aws ecs update-service --cluster next-project --service next-project --force-new-deployment'
               }
             })
           }
