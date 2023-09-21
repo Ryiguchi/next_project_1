@@ -35,3 +35,4 @@ yarn-error.log*
 
 # Jenkins Dockerfile template
 .jenkins
+.old
