@@ -14,7 +14,7 @@ pipeline {
       when {
         beforeAgent true
         branch "dev"
-      }Builds Docker image
+      }
       agent {
         dockerfile {
           filename "Dockerfile.dev"
@@ -52,7 +52,7 @@ pipeline {
             }
             
           }
-        }Builds Docker image
+        }
 
         // Builds code
         stage("Building") {
