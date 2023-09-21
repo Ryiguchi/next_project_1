@@ -119,7 +119,6 @@ pipeline {
           steps {
             script {
               catchErrorAndSetErrorMessage("Pushing to Docker Hub failed", {
-                sh "docker tag next-app-main rymela/next-project"
                 sh "docker push rymela/next-project"
               })
             }
