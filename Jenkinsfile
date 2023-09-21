@@ -23,6 +23,21 @@ pipeline {
       stages {
 
         //  Uses ESLint to check for errors
+        stage("Install Dependencies") {
+          steps {
+            script {
+              try {
+                sh "npm install"
+              } catch (Exception e) {
+                  ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
+                  currentBuild.result = 'FAILURE'
+                  error("${ERROR_MESSAGE}")
+              }
+            }
+            
+          }
+        }
+
         stage("Linting") {
           steps {
             script {
