@@ -17,7 +17,7 @@ RUN npm install -g eslint
 #INSTALL AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
-RUN sudo ./aws/install
+RUN ./aws/install
 
 USER jenkins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
