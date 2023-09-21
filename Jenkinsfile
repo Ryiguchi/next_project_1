@@ -32,7 +32,7 @@ pipeline {
               try {
                 sh "npm install"
               } catch (Exception e) {
-                  ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
+                  ERROR_MESSAGE = "There was a problem installing dependencies: ${e.getMessage()}"
                   currentBuild.result = 'FAILURE'
                   error("${ERROR_MESSAGE}")
               }
