@@ -20,9 +20,6 @@ pipeline {
           filename "Dockerfile.dev"
         }
       }
-      tools {
-        nodejs NodeJS
-      }
       stages {
 
         //  Uses ESLint to check for errors
