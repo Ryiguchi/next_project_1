@@ -36,15 +36,10 @@ pipeline {
         stage("Install Dependencies") {
           steps {
             script {
-              try {
+              catchErrorAndSetErrorMessage("There was a problem installing dependencies", {
                 sh "npm install"
-              } catch (Exception e) {
-                  ERROR_MESSAGE = "There was a problem installing dependencies: ${e.getMessage()}"
-                  currentBuild.result = 'FAILURE'
-                  error("${ERROR_MESSAGE}")
-              }
+              })
             }
-            
           }
         }
 
@@ -55,7 +50,6 @@ pipeline {
                 sh "npm run lint"
               })
             }
-            
           }
         }
 
@@ -63,15 +57,10 @@ pipeline {
         stage("Testing") {
           steps {
             script {
-              try {
-                sh 'npm run test '
-              } catch (Exception e) {
-                  ERROR_MESSAGE = "Testing failed: ${e.getMessage()}"
-                  currentBuild.result = 'FAILURE'
-                  error("${ERROR_MESSAGE}")
-              }
+              catchErrorAndSetErrorMessage("Testing failed", {
+                sh "npm run test"
+              })
             }
-            
           }
         }
 
@@ -79,13 +68,9 @@ pipeline {
         stage("Building") {
           steps {
             script {
-              try {
+              catchErrorAndSetErrorMessage("Building failed", {
                 sh 'npm run build'
-              } catch (Exception e) {
-                  ERROR_MESSAGE = "Building failed: ${e.getMessage()}"
-                  currentBuild.result = 'FAILURE'
-                  error("${ERROR_MESSAGE}")
-              }
+              })
             }
           }
         }
@@ -101,13 +86,9 @@ pipeline {
         stage("Building image") {
           steps {
             script {
-              try {
-                sh "docker build --no-cache -t rymela/next-project -f ./Dockerfile.main ."
-              } catch (Exception e) {
-                  ERROR_MESSAGE = "There was a build error: ${e.getMessage()}"
-                  currentBuild.result = 'FAILURE'
-                  error("${ERROR_MESSAGE}")
-              }
+              catchErrorAndSetErrorMessage("There was a build error", {
+                sh 'docker build --no-cache -t rymela/next-project -f ./Dockerfile.main .'
+              })
             }
           }
         }
@@ -125,15 +106,24 @@ pipeline {
         //  Sign in to Docker Hub
         stage('Login to Docker Hub') {
           steps {
-            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            script {
+              catchErrorAndSetErrorMessage("Docker Hub login failed", {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+              })
+            }
           }
         }
 
         // Pushes the production image to Docker hub 
         stage("Push to Docker Hub") {
           steps {
-            sh "docker tag next-app-main rymela/next-project"
-            sh "docker push rymela/next-project"
+            script {
+              catchErrorAndSetErrorMessage("Pushing to Docker Hub failed", {
+                sh "docker tag next-app-main rymela/next-project"
+                sh "docker push rymela/next-project"
+              })
+            }
+            
           }
         }
 
@@ -151,14 +141,16 @@ pipeline {
         //  Update ECS Service
         stage("Depoly") {
           steps {
-            withCredentials([[
+            catchErrorAndSetErrorMessage("Deployment failed!", {
+              withCredentials([[
                 $class: 'AmazonWebServicesCredentialsBinding',
                 credentialsId: 'aws-access-next',
                 accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-            ]]) {
-              sh 'aws ecs update-service --cluster next-project-cluster --service next-project --force-new-deployment'
-            }
+              ]]) {
+                sh 'aws ecs update-service --cluster next-project-cluster --service next-project --force-new-deployment'
+              }
+            })
           }
         }
 
