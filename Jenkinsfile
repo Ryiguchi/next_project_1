@@ -172,7 +172,7 @@ pipeline {
     }
 
     // **MAIN ONLY** - Update ECS Service
-    stage("Depoly") {
+    stage("Deploy") {
       when {
         branch "main"
       }
