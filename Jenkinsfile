@@ -1,3 +1,13 @@
+def catchErrorAndSetErrorMessage(message, closure) {
+    try {
+        closure()
+    } catch (Exception e) {
+        ERROR_MESSAGE = message + ": ${e.getMessage()}"
+        currentBuild.result = 'FAILURE'
+        error("${ERROR_MESSAGE}")
+    }
+}
+
 pipeline {
   agent any
 
@@ -22,7 +32,7 @@ pipeline {
       }
       stages {
 
-        //  Uses ESLint to check for errors
+        //  Install Dependecies
         stage("Install Dependencies") {
           steps {
             script {
@@ -41,13 +51,9 @@ pipeline {
         stage("Linting") {
           steps {
             script {
-              try {
+              catchErrorAndSetErrorMessage("There was a linting error", {
                 sh "npm run lint"
-              } catch (Exception e) {
-                  ERROR_MESSAGE = "There was a linting error: ${e.getMessage()}"
-                  currentBuild.result = 'FAILURE'
-                  error("${ERROR_MESSAGE}")
-              }
+              })
             }
             
           }
