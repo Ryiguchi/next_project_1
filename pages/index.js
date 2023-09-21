@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import Link from 'next/link';
 
 function HomePage(props) {
-  const { products  = props;
+  const { products } = props;
 
   return (
     <ul>
